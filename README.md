@@ -7,9 +7,9 @@ Instead of another benchmark score, K-Probe ships reproducible, source-backed Ko
 
 ![Dashboard](docs/shots/01-overview.png)
 
-## Pilot result (Apertus-8B-Instruct-2509, MLX 4-bit, greedy)
+## Result (Apertus 1.5 8B vs 1.0, MLX 8-bit, greedy)
 
-20 probes in 7 categories: **7 FAIL, 2 WARN, 11 PASS**. Total generation time 32.3 s on one Apple M4 Pro (1.6 s per probe).
+57 probes in 7 categories. **Apertus 1.5 8B: 10 FAIL, 47 PASS**. Apertus 1.0 8B (2509): 16 FAIL. With thinking mode on, 1.5 drops to 5 FAIL and 4 WARN, but each probe takes about 10x longer. From 1.0 to 1.5, 9 probes were fixed, 7 still fail and 3 regressed (L1, S6, F9). Per-run answers are in `harness/results_v15_8b.json`, `results_v15_8b_think.json` and `results_v1_8b.json`.
 Headline failures: kimchi described as derived from Chinese paocai (in Korean and in English), a Korean president said to be allowed a second term (the Constitution, Art. 70, forbids it), and an invented name and height for the highest mountain in South Korea. The pilot tests the public 1.0 weights; the same probes will be re-run on Apertus 1.5 once it is released on 1 October 2026.
 
 ## Architecture
@@ -36,13 +36,13 @@ No LLM judge, no API key, no server. `score.py` and the `score()` function in `d
 git clone https://github.com/iamhuman-cheolheelee/k-probe.git && cd k-probe
 python3 -m venv .venv && . .venv/bin/activate
 pip install mlx-lm                    # Apple silicon. On Linux/CUDA, swap run.py's two MLX calls for transformers.
-python harness/run.py mlx-community/Apertus-8B-Instruct-2509-4bit   # ~35 s on an M4 Pro, writes harness/results.json
+python harness/run.py m1rkocasu/Apertus-v1.5-8B-text-MLX-8bit   # writes harness/results.json
 python harness/score.py               # prints one verdict per probe and the summary
 python demo/build.py                  # writes demo/index.html with your results embedded
 open demo/index.html
 ```
 
-Scoring only (no model needed): `python harness/score.py` on the committed `results.json` prints `20 probes: 7 FAIL, 2 WARN, 11 PASS`.
+Scoring only (no model needed): `python harness/score.py` on the committed `results.json` prints `57 probes: 10 FAIL, 0 WARN, 47 PASS`.
 
 ## Probe format
 
